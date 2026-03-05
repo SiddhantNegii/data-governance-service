@@ -1,56 +1,59 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from uuid import uuid4
-from datetime import datetime
-from app.schemas import DataRecordCreate
-from app.database import engine, Base, AsyncSessionLocal
-from app.models import DataRecord
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.database import engine, Base
 from app.logger import logger
 
-app = FastAPI(title="Data Governance Service")
+# Import routers
+from app.routers import (
+    clients,
+    products,
+    policies,
+    purge_jobs,
+    purge_logs
+)
 
+app = FastAPI(
+    title="Tartan Data Governance Service",
+    version="1.0.0"
+)
 
-# Create tables on startup
+# -----------------------------
+# Enable CORS (React Frontend)
+# -----------------------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   # For development. Later restrict to frontend domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# -----------------------------
+# Create DB tables on startup
+# -----------------------------
 @app.on_event("startup")
 async def on_startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
     logger.info("Database tables created.")
 
+# -----------------------------
+# Register API Routers
+# -----------------------------
+app.include_router(clients.router)
+app.include_router(products.router)
+app.include_router(policies.router)
+app.include_router(purge_jobs.router)
+app.include_router(purge_logs.router)
 
-# Dependency
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
-
-
-# Insert dummy data
-@app.post("/records")
-async def create_record(
-    request: DataRecordCreate,
-    db: AsyncSession = Depends(get_db),
-):
-    record = DataRecord(
-        uid=request.uid,
-        product_id=request.product_id,
-        data_retention_days=request.data_retention_days,
-    )
-
-    db.add(record)
-    await db.commit()
-    await db.refresh(record)
-
-    logger.info(f"Inserted record for uid={record.uid}")
-
-    return record
-
-# Get all records
-@app.get("/records")
-async def get_records(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(DataRecord))
-    records = result.scalars().all()
-
-    logger.info("Fetched all records")
-
-    return records
+# -----------------------------
+# Health Check Endpoint
+# -----------------------------
+@app.get("/")
+async def root():
+    return {
+        "service": "Tartan Data Governance Service",
+        "status": "running"
+    }
