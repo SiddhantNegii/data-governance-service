@@ -2,18 +2,26 @@ import { DashboardStats, Client, Product, RetentionPolicy, PurgeJob, PurgeLog } 
 
 const BASE_URL = "http://localhost:8000";
 
+async function handleResponse(res: Response) {
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`API Error: ${res.status} ${text}`);
+  }
+  return res.json();
+}
+
 export const api = {
 
   // -------------------------
   // Clients
   // -------------------------
   getClients: async (): Promise<Client[]> => {
-    const res = await fetch(`${BASE_URL}/clients`);
-    return res.json();
+    const res = await fetch(`${BASE_URL}/clients/`);
+    return handleResponse(res);
   },
 
   createClient: async (data: { client_id: string; name: string }) => {
-    const res = await fetch(`${BASE_URL}/clients`, {
+    const res = await fetch(`${BASE_URL}/clients/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -21,19 +29,19 @@ export const api = {
       body: JSON.stringify(data)
     });
 
-    return res.json();
+    return handleResponse(res);
   },
 
   // -------------------------
   // Products
   // -------------------------
   getProducts: async (): Promise<Product[]> => {
-    const res = await fetch(`${BASE_URL}/products`);
-    return res.json();
+    const res = await fetch(`${BASE_URL}/products/`);
+    return handleResponse(res);
   },
 
   createProduct: async (data: { product_id: string; name: string; description?: string }) => {
-    const res = await fetch(`${BASE_URL}/products`, {
+    const res = await fetch(`${BASE_URL}/products/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -41,15 +49,15 @@ export const api = {
       body: JSON.stringify(data)
     });
 
-    return res.json();
+    return handleResponse(res);
   },
 
   // -------------------------
   // Retention Policies
   // -------------------------
   getRetentionPolicies: async (): Promise<RetentionPolicy[]> => {
-    const res = await fetch(`${BASE_URL}/policies`);
-    return res.json();
+    const res = await fetch(`${BASE_URL}/policies/`);
+    return handleResponse(res);
   },
 
   createRetentionPolicy: async (data: {
@@ -57,7 +65,7 @@ export const api = {
     product_id: string;
     retention_days: number;
   }) => {
-    const res = await fetch(`${BASE_URL}/policies`, {
+    const res = await fetch(`${BASE_URL}/policies/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -65,30 +73,30 @@ export const api = {
       body: JSON.stringify(data)
     });
 
-    return res.json();
+    return handleResponse(res);
   },
 
   // -------------------------
   // Purge Jobs
   // -------------------------
   getPurgeJobs: async (): Promise<PurgeJob[]> => {
-    const res = await fetch(`${BASE_URL}/purge-jobs`);
-    return res.json();
+    const res = await fetch(`${BASE_URL}/purge-jobs/`);
+    return handleResponse(res);
   },
 
   // -------------------------
   // Purge Logs
   // -------------------------
   getPurgeLogs: async (): Promise<PurgeLog[]> => {
-    const res = await fetch(`${BASE_URL}/purge-logs`);
-    return res.json();
+    const res = await fetch(`${BASE_URL}/purge-logs/`);
+    return handleResponse(res);
   },
 
   // -------------------------
   // Manual Purge
   // -------------------------
   triggerManualPurge: async (data: any): Promise<{ success: boolean; message: string }> => {
-    const res = await fetch(`${BASE_URL}/purge-jobs`, {
+    const res = await fetch(`${BASE_URL}/purge-jobs/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -96,7 +104,7 @@ export const api = {
       body: JSON.stringify(data)
     });
 
-    return res.json();
+    return handleResponse(res);
   },
 
   // -------------------------

@@ -4,7 +4,8 @@ import { Table } from '../components/Table';
 import { Modal } from '../components/Modal';
 import { api } from '../services/api';
 import { Client } from '../types';
-import { Plus, Search, Filter, Download, Edit2, Trash2, Info } from 'lucide-react';
+import { Plus, Search, Filter, Download, Info } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 export const Clients = () => {
   const [clients, setClients] = useState<Client[]>([]);
@@ -12,10 +13,10 @@ export const Clients = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    api.getClients().then((data) => {
-      setClients(data);
-      setIsLoading(false);
-    });
+    api.getClients()
+      .then((data) => setClients(data))
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
   }, []);
 
   return (
@@ -46,13 +47,20 @@ export const Clients = () => {
         ].map((stat, idx) => (
           <Card key={idx} className="p-4">
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
-            <p className={cn(
-              "text-2xl font-black mt-1",
-              stat.color === 'blue' ? "text-[#137fec]" :
-              stat.color === 'emerald' ? "text-emerald-500" :
-              stat.color === 'rose' ? "text-rose-500" :
-              "text-slate-900"
-            )}>{stat.value}</p>
+            <p
+              className={cn(
+                "text-2xl font-black mt-1",
+                stat.color === 'blue'
+                  ? "text-[#137fec]"
+                  : stat.color === 'emerald'
+                  ? "text-emerald-500"
+                  : stat.color === 'rose'
+                  ? "text-rose-500"
+                  : "text-slate-900"
+              )}
+            >
+              {stat.value}
+            </p>
           </Card>
         ))}
       </div>
@@ -84,24 +92,24 @@ export const Clients = () => {
         </div>
 
         <Table<Client>
-  isLoading={isLoading}
-  columns={[
-    {
-      header: "Client Name",
-      accessor: (item) => (
-        <div>
-          <p className="font-bold">{item.name}</p>
-          <p className="text-xs text-slate-500">{item.client_id}</p>
-        </div>
-      )
-    },
-    {
-      header: "Created",
-      accessor: (item) => new Date(item.created_at).toLocaleDateString()
-    },
-  ]}
-  data={clients}
-/>
+          isLoading={isLoading}
+          columns={[
+            {
+              header: "Client Name",
+              accessor: (item) => (
+                <div>
+                  <p className="font-bold">{item.name}</p>
+                  <p className="text-xs text-slate-500">{item.client_id}</p>
+                </div>
+              )
+            },
+            {
+              header: "Created",
+              accessor: (item) => new Date(item.created_at).toLocaleDateString()
+            },
+          ]}
+          data={clients}
+        />
       </Card>
 
       {/* Help Banner */}
@@ -112,7 +120,9 @@ export const Clients = () => {
           </div>
           <div>
             <h4 className="text-xl font-bold text-slate-900">Need help with Governance Policies?</h4>
-            <p className="text-slate-600 mt-1 max-w-xl">Our documentation provides comprehensive guides on setting up retention periods and purge schedules for your clients.</p>
+            <p className="text-slate-600 mt-1 max-w-xl">
+              Our documentation provides comprehensive guides on setting up retention periods and purge schedules for your clients.
+            </p>
           </div>
         </div>
         <Button variant="secondary" className="bg-white border border-slate-200 hover:shadow-md transition-all whitespace-nowrap px-8">
@@ -121,9 +131,9 @@ export const Clients = () => {
       </div>
 
       {/* Add Client Modal */}
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         title="Add New Client"
         footer={
           <>
@@ -135,12 +145,22 @@ export const Clients = () => {
         <div className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Client Name</label>
-            <input type="text" className="w-full bg-slate-50 border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-[#137fec]" placeholder="e.g. Acme Corp" />
+            <input
+              type="text"
+              className="w-full bg-slate-50 border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-[#137fec]"
+              placeholder="e.g. Acme Corp"
+            />
           </div>
+
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Client ID</label>
-            <input type="text" className="w-full bg-slate-50 border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-[#137fec]" placeholder="e.g. CLI-12345" />
+            <input
+              type="text"
+              className="w-full bg-slate-50 border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-[#137fec]"
+              placeholder="e.g. CLI-12345"
+            />
           </div>
+
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Enabled Products</label>
             <div className="grid grid-cols-2 gap-2">
@@ -157,5 +177,3 @@ export const Clients = () => {
     </div>
   );
 };
-
-import { cn } from '../lib/utils';
