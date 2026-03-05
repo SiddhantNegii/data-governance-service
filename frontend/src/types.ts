@@ -1,47 +1,47 @@
 export interface Client {
   id: string;
+  client_id: string;
   name: string;
-  productsEnabled: string[];
-  retentionPolicies: number;
-  lastPurgeDate: string;
-  status: 'Successful' | 'Processing' | 'Completed' | 'Failed';
+  created_at: string;
 }
 
 export interface Product {
   id: string;
+  product_id: string;
   name: string;
-  description: string;
-  activeClients: number;
+  description?: string;
+  created_at: string;
 }
 
 export interface RetentionPolicy {
   id: string;
-  clientId: string;
-  productId: string;
-  retentionPeriod: string;
-  lastUpdated: string;
+  client_id: string;
+  product_id: string;
+  retention_days: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PurgeJob {
   id: string;
-  client: string;
-  product: string;
-  triggerType: 'Manual' | 'Scheduled';
-  rowsDeleted: number;
-  executionTime: string;
-  duration: string;
-  status: 'Success' | 'Running' | 'Failed';
-  logs?: string[];
+  client_id: string;
+  product_id: string;
+  trigger_type: string;
+  rows_deleted: number;
+  execution_time: string;
+  duration?: string;
+  status: string;
 }
 
 export interface PurgeLog {
+  id: string;
   timestamp: string;
-  client: string;
-  product: string;
-  actionType: string;
-  rowsDeleted: number;
-  status: 'Success' | 'Failed' | 'Warning';
-  notes: string;
+  client_id: string;
+  product_id: string;
+  action_type: string;
+  rows_deleted: number;
+  status: string;
+  notes?: string;
 }
 
 export interface DashboardStats {

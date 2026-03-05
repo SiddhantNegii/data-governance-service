@@ -84,74 +84,24 @@ export const Clients = () => {
         </div>
 
         <Table<Client>
-          isLoading={isLoading}
-          columns={[
-            {
-              header: 'Client Name & ID',
-              accessor: (item) => (
-                <div className="flex items-center gap-3">
-                  <div className="size-9 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 font-bold text-xs uppercase">
-                    {item.name.substring(0, 2)}
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900">{item.name}</p>
-                    <p className="text-[10px] text-slate-500 font-mono">{item.id}</p>
-                  </div>
-                </div>
-              ),
-            },
-            {
-              header: 'Products Enabled',
-              accessor: (item) => (
-                <div className="flex flex-wrap gap-1">
-                  {item.productsEnabled.map((p, i) => (
-                    <Badge key={i} variant={i === 0 ? 'info' : 'neutral'}>
-                      {p}
-                    </Badge>
-                  ))}
-                </div>
-              ),
-            },
-            {
-              header: 'Retention Policies',
-              accessor: (item) => (
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-900">{item.retentionPolicies}</span>
-                  <span className="text-[10px] text-slate-500 font-medium uppercase">Active</span>
-                </div>
-              ),
-            },
-            {
-              header: 'Last Purge Date',
-              accessor: (item) => (
-                <div>
-                  <p className="text-slate-600 font-medium">{item.lastPurgeDate}</p>
-                  <p className={cn(
-                    "text-[10px] font-bold uppercase tracking-tight",
-                    item.status === 'Failed' ? "text-rose-500" : "text-emerald-500"
-                  )}>
-                    {item.status}
-                  </p>
-                </div>
-              ),
-            },
-            {
-              header: 'Actions',
-              className: 'text-right',
-              accessor: () => (
-                <div className="flex items-center justify-end gap-1">
-                  <Button variant="ghost" size="icon" className="text-slate-400 hover:text-[#137fec]">
-                    <Edit2 size={16} />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="text-slate-400 hover:text-rose-500">
-                    <Trash2 size={16} />
-                  </Button>
-                </div>
-              ),
-            },
-          ]}
-          data={clients}
-        />
+  isLoading={isLoading}
+  columns={[
+    {
+      header: "Client Name",
+      accessor: (item) => (
+        <div>
+          <p className="font-bold">{item.name}</p>
+          <p className="text-xs text-slate-500">{item.client_id}</p>
+        </div>
+      )
+    },
+    {
+      header: "Created",
+      accessor: (item) => new Date(item.created_at).toLocaleDateString()
+    },
+  ]}
+  data={clients}
+/>
       </Card>
 
       {/* Help Banner */}
