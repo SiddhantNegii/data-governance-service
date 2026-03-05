@@ -1,0 +1,5 @@
+{
+  "name": "Tartan Data Governance Service",
+  "description": "Enterprise admin dashboard for managing data retention policies and automated purge operations.",
+  "requestFramePermissions": []
+}
