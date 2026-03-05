@@ -15,20 +15,19 @@ export interface Product {
 
 export interface RetentionPolicy {
   id: string;
-  client_id: string;
-  product_id: string;
-  retention_days: number;
-  created_at: string;
-  updated_at: string;
+  clientId: string;
+  productId: string;
+  retentionPeriod: string;
+  lastUpdated: string;
 }
 
 export interface PurgeJob {
   id: string;
-  client_id: string;
-  product_id: string;
-  trigger_type: string;
-  rows_deleted: number;
-  execution_time: string;
+  client: string;
+  product: string;
+  triggerType: string;
+  rowsDeleted: number;
+  executionTime: string;
   duration?: string;
   status: string;
 }
@@ -36,10 +35,10 @@ export interface PurgeJob {
 export interface PurgeLog {
   id: string;
   timestamp: string;
-  client_id: string;
-  product_id: string;
-  action_type: string;
-  rows_deleted: number;
+  client: string;
+  product: string;
+  actionType: string;
+  rowsDeleted: number;
   status: string;
   notes?: string;
 }

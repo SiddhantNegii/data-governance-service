@@ -3,6 +3,7 @@ import { Card, Button, Badge } from '../components/UI';
 import { Table } from '../components/Table';
 import { Modal } from '../components/Modal';
 import { api } from '../services/api';
+import { cn } from '../lib/utils';
 import { PurgeJob } from '../types';
 import { 
   Download, 
@@ -226,5 +227,3 @@ export const PurgeJobs = () => {
     </div>
   );
 };
-
-import { cn } from '../lib/utils';
