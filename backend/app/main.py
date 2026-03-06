@@ -13,6 +13,7 @@ from app.routers import (
     purge_logs
 )
 
+
 app = FastAPI(
     title="Tartan Data Governance Service",
     version="1.0.0"
