@@ -3,11 +3,35 @@ import { DashboardStats, Client, Product, RetentionPolicy, PurgeJob, PurgeLog } 
 const BASE_URL = "http://localhost:8000";
 
 async function handleResponse(res: Response) {
+
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`API Error: ${res.status} ${text}`);
+
+    let message = "Operation failed";
+
+    try {
+
+      const data = await res.json();
+
+      if (data?.detail) {
+        message = data.detail;
+      }
+
+    } catch {
+
+      const text = await res.text();
+
+      if (text) {
+        message = text;
+      }
+
+    }
+
+    throw new Error(message);
+
   }
+
   return res.json();
+
 }
 
 export const api = {
@@ -36,6 +60,28 @@ export const api = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
+    });
+
+    return handleResponse(res);
+
+  },
+
+  updateClient: async (id: string, data: { client_id: string; name: string }) => {
+
+    const res = await fetch(`${BASE_URL}/clients/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    return handleResponse(res);
+
+  },
+
+  deleteClient: async (id: string) => {
+
+    const res = await fetch(`${BASE_URL}/clients/${id}`, {
+      method: "DELETE"
     });
 
     return handleResponse(res);
@@ -73,6 +119,32 @@ export const api = {
 
   },
 
+  updateProduct: async (id: string, data: {
+    product_id: string
+    name: string
+    description?: string
+  }) => {
+
+    const res = await fetch(`${BASE_URL}/products/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    return handleResponse(res);
+
+  },
+
+  deleteProduct: async (id: string) => {
+
+    const res = await fetch(`${BASE_URL}/products/${id}`, {
+      method: "DELETE"
+    });
+
+    return handleResponse(res);
+
+  },
+
   // -------------------------
   // Retention Policies
   // -------------------------
@@ -102,6 +174,32 @@ export const api = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
+    });
+
+    return handleResponse(res);
+
+  },
+
+  updatePolicy: async (policyId: string, data: {
+    client_id: string
+    product_id: string
+    retention_days: number
+  }) => {
+
+    const res = await fetch(`${BASE_URL}/policies/${policyId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    return handleResponse(res);
+
+  },
+
+  deletePolicy: async (policyId: string) => {
+
+    const res = await fetch(`${BASE_URL}/policies/${policyId}`, {
+      method: "DELETE"
     });
 
     return handleResponse(res);

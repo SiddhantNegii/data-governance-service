@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Integer, DateTime, Text
+
+from sqlalchemy import String, Integer, DateTime, Text, UniqueConstraint, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -20,9 +21,16 @@ class Client(Base):
         default=uuid.uuid4
     )
 
-    client_id: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    client_id: Mapped[str] = mapped_column(
+        String(100),
+        unique=True,
+        nullable=False
+    )
 
-    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    name: Mapped[str] = mapped_column(
+        String(200),
+        nullable=False
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -43,11 +51,21 @@ class Product(Base):
         default=uuid.uuid4
     )
 
-    product_id: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    product_id: Mapped[str] = mapped_column(
+        String(100),
+        unique=True,
+        nullable=False
+    )
 
-    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    name: Mapped[str] = mapped_column(
+        String(200),
+        nullable=False
+    )
 
-    description: Mapped[str] = mapped_column(Text, nullable=True)
+    description: Mapped[str] = mapped_column(
+        Text,
+        nullable=True
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -62,17 +80,36 @@ class Product(Base):
 class RetentionPolicy(Base):
     __tablename__ = "retention_policies"
 
+    __table_args__ = (
+        UniqueConstraint(
+            "client_id",
+            "product_id",
+            name="unique_client_product_policy"
+        ),
+    )
+
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4
     )
 
-    client_id: Mapped[str] = mapped_column(String(100), nullable=False)
+    client_id: Mapped[str] = mapped_column(
+        String(100),
+        ForeignKey("clients.client_id"),
+        nullable=False
+    )
 
-    product_id: Mapped[str] = mapped_column(String(100), nullable=False)
+    product_id: Mapped[str] = mapped_column(
+        String(100),
+        ForeignKey("products.product_id"),
+        nullable=False
+    )
 
-    retention_days: Mapped[int] = mapped_column(Integer, nullable=False)
+    retention_days: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -81,7 +118,8 @@ class RetentionPolicy(Base):
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
     )
 
 
@@ -98,19 +136,39 @@ class PurgeJob(Base):
         default=uuid.uuid4
     )
 
-    client_id: Mapped[str] = mapped_column(String(100), nullable=False)
+    client_id: Mapped[str] = mapped_column(
+        String(100),
+        ForeignKey("clients.client_id"),
+        nullable=False
+    )
 
-    product_id: Mapped[str] = mapped_column(String(100), nullable=False)
+    product_id: Mapped[str] = mapped_column(
+        String(100),
+        ForeignKey("products.product_id"),
+        nullable=False
+    )
 
-    trigger_type: Mapped[str] = mapped_column(String(50))  # Manual / Scheduled
+    trigger_type: Mapped[str] = mapped_column(
+        String(50)
+    )
 
-    rows_deleted: Mapped[int] = mapped_column(Integer, default=0)
+    rows_deleted: Mapped[int] = mapped_column(
+        Integer,
+        default=0
+    )
 
-    execution_time: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    execution_time: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow
+    )
 
-    duration: Mapped[str] = mapped_column(String(50))
+    duration: Mapped[str] = mapped_column(
+        String(50)
+    )
 
-    status: Mapped[str] = mapped_column(String(50))
+    status: Mapped[str] = mapped_column(
+        String(50)
+    )
 
 
 # ---------------------------
@@ -131,14 +189,28 @@ class PurgeLog(Base):
         default=datetime.utcnow
     )
 
-    client_id: Mapped[str] = mapped_column(String(100))
+    client_id: Mapped[str] = mapped_column(
+        String(100),
+        ForeignKey("clients.client_id")
+    )
 
-    product_id: Mapped[str] = mapped_column(String(100))
+    product_id: Mapped[str] = mapped_column(
+        String(100),
+        ForeignKey("products.product_id")
+    )
 
-    action_type: Mapped[str] = mapped_column(String(100))
+    action_type: Mapped[str] = mapped_column(
+        String(100)
+    )
 
-    rows_deleted: Mapped[int] = mapped_column(Integer)
+    rows_deleted: Mapped[int] = mapped_column(
+        Integer
+    )
 
-    status: Mapped[str] = mapped_column(String(50))
+    status: Mapped[str] = mapped_column(
+        String(50)
+    )
 
-    notes: Mapped[str] = mapped_column(Text)
+    notes: Mapped[str] = mapped_column(
+        Text
+    )
