@@ -85,7 +85,7 @@ export const Products = () => {
     } catch (err) {
 
       console.error(err);
-
+      alert(err.message);
     }
 
   };
