@@ -18,29 +18,18 @@ export interface RetentionPolicy {
   clientId: string;
   productId: string;
   retentionPeriod: string;
-  lastUpdated: string;
-}
-
-export interface PurgeJob {
-  id: string;
-  client: string;
-  product: string;
-  triggerType: string;
-  rowsDeleted: number;
-  executionTime: string;
-  duration?: string;
-  status: string;
+  lastUpdatedBy: string;
+  lastUpdatedAt: string;
 }
 
 export interface PurgeLog {
   id: string;
   timestamp: string;
+  retentionPolicyId: string;
   client: string;
   product: string;
   actionType: string;
-  rowsDeleted: number;
   status: string;
-  notes?: string;
 }
 
 export interface DashboardStats {

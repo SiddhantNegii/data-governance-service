@@ -9,7 +9,6 @@ from app.routers import (
     clients,
     products,
     policies,
-    purge_jobs,
     purge_logs
 )
 
@@ -46,7 +45,6 @@ async def on_startup():
 app.include_router(clients.router)
 app.include_router(products.router)
 app.include_router(policies.router)
-app.include_router(purge_jobs.router)
 app.include_router(purge_logs.router)
 
 # -----------------------------

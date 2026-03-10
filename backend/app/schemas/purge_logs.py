@@ -6,12 +6,11 @@ from uuid import UUID
 class PurgeLogResponse(BaseModel):
     id: UUID
     timestamp: datetime
+    retention_policy_id: UUID
     client_id: str
     product_id: str
     action_type: str
-    rows_deleted: int
     status: str
-    notes: str | None
 
     class Config:
         from_attributes = True

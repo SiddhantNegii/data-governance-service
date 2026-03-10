@@ -14,7 +14,15 @@ async def get_db():
         yield session
 
 
+# ---------------------------
+# GET ALL PURGE LOGS
+# ---------------------------
+
 @router.get("/", response_model=list[PurgeLogResponse])
 async def get_logs(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(PurgeLog))
+
+    result = await db.execute(
+        select(PurgeLog).order_by(PurgeLog.timestamp.desc())
+    )
+
     return result.scalars().all()

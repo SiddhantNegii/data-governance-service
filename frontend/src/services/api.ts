@@ -1,4 +1,4 @@
-import { DashboardStats, Client, Product, RetentionPolicy, PurgeJob, PurgeLog } from '../types';
+import { DashboardStats, Client, Product, RetentionPolicy, PurgeLog } from '../types';
 
 const BASE_URL = "http://localhost:8000";
 
@@ -159,7 +159,8 @@ export const api = {
       clientId: p.client_id,
       productId: p.product_id,
       retentionPeriod: `${p.retention_days} days`,
-      lastUpdated: p.updated_at
+      lastUpdatedBy: p.last_updated_by,
+      lastUpdatedAt: p.last_updated_at
     }));
 
   },
@@ -168,6 +169,7 @@ export const api = {
     client_id: string;
     product_id: string;
     retention_days: number;
+    last_updated_by: string;
   }) => {
 
     const res = await fetch(`${BASE_URL}/policies/`, {
@@ -184,6 +186,7 @@ export const api = {
     client_id: string
     product_id: string
     retention_days: number
+    last_updated_by: string
   }) => {
 
     const res = await fetch(`${BASE_URL}/policies/${policyId}`, {
@@ -207,28 +210,6 @@ export const api = {
   },
 
   // -------------------------
-  // Purge Jobs
-  // -------------------------
-
-  getPurgeJobs: async (): Promise<PurgeJob[]> => {
-
-    const res = await fetch(`${BASE_URL}/purge-jobs/`);
-    const data = await handleResponse(res);
-
-    return data.map((j: any) => ({
-      id: j.id,
-      client: j.client_id,
-      product: j.product_id,
-      triggerType: j.trigger_type,
-      rowsDeleted: j.rows_deleted,
-      executionTime: j.execution_time,
-      duration: j.duration,
-      status: j.status
-    }));
-
-  },
-
-  // -------------------------
   // Purge Logs
   // -------------------------
 
@@ -240,29 +221,12 @@ export const api = {
     return data.map((l: any) => ({
       id: l.id,
       timestamp: l.timestamp,
+      retentionPolicyId: l.retention_policy_id,
       client: l.client_id,
       product: l.product_id,
       actionType: l.action_type,
-      rowsDeleted: l.rows_deleted,
-      status: l.status,
-      notes: l.notes
+      status: l.status
     }));
-
-  },
-
-  // -------------------------
-  // Manual Purge
-  // -------------------------
-
-  triggerManualPurge: async (data: any) => {
-
-    const res = await fetch(`${BASE_URL}/purge-jobs/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    return handleResponse(res);
 
   },
 

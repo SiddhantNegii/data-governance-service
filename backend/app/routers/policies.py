@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime
 
 from app.database import AsyncSessionLocal
 from app.models import RetentionPolicy
@@ -39,7 +40,8 @@ async def create_policy(
     new_policy = RetentionPolicy(
         client_id=policy.client_id,
         product_id=policy.product_id,
-        retention_days=policy.retention_days
+        retention_days=policy.retention_days,
+        last_updated_by=policy.last_updated_by
     )
 
     db.add(new_policy)
@@ -105,6 +107,8 @@ async def update_policy(
     policy.client_id = policy_data.client_id
     policy.product_id = policy_data.product_id
     policy.retention_days = policy_data.retention_days
+    policy.last_updated_by = policy_data.last_updated_by
+    policy.last_updated_at = datetime.utcnow()
 
     try:
         await db.commit()

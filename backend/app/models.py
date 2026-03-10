@@ -111,63 +111,21 @@ class RetentionPolicy(Base):
         nullable=False
     )
 
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow
+    # NEW AUDIT FIELDS
+    last_updated_by: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False
     )
 
-    updated_at: Mapped[datetime] = mapped_column(
+    last_updated_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )
 
-
-# ---------------------------
-# PURGE JOBS
-# ---------------------------
-
-class PurgeJob(Base):
-    __tablename__ = "purge_jobs"
-
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4
-    )
-
-    client_id: Mapped[str] = mapped_column(
-        String(100),
-        ForeignKey("clients.client_id"),
-        nullable=False
-    )
-
-    product_id: Mapped[str] = mapped_column(
-        String(100),
-        ForeignKey("products.product_id"),
-        nullable=False
-    )
-
-    trigger_type: Mapped[str] = mapped_column(
-        String(50)
-    )
-
-    rows_deleted: Mapped[int] = mapped_column(
-        Integer,
-        default=0
-    )
-
-    execution_time: Mapped[datetime] = mapped_column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow
-    )
-
-    duration: Mapped[str] = mapped_column(
-        String(50)
-    )
-
-    status: Mapped[str] = mapped_column(
-        String(50)
     )
 
 
@@ -189,28 +147,28 @@ class PurgeLog(Base):
         default=datetime.utcnow
     )
 
+    retention_policy_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("retention_policies.id"),
+        nullable=False
+    )
+
     client_id: Mapped[str] = mapped_column(
         String(100),
-        ForeignKey("clients.client_id")
+        ForeignKey("clients.client_id"),
+        nullable=False
     )
 
     product_id: Mapped[str] = mapped_column(
         String(100),
-        ForeignKey("products.product_id")
+        ForeignKey("products.product_id"),
+        nullable=False
     )
 
     action_type: Mapped[str] = mapped_column(
         String(100)
     )
 
-    rows_deleted: Mapped[int] = mapped_column(
-        Integer
-    )
-
     status: Mapped[str] = mapped_column(
         String(50)
-    )
-
-    notes: Mapped[str] = mapped_column(
-        Text
     )

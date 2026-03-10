@@ -62,6 +62,23 @@ export const ManualPurge = () => {
           Configure and execute manual data deletion tasks. This action is destructive and irreversible.
           Please ensure all selections are verified before proceeding.
         </p>
+        <div className="p-4 mt-4 bg-red-50 border border-red-200 rounded-xl flex gap-4">
+
+        <div className="p-2 bg-red-100 rounded-lg text-red-600 shrink-0">
+          <AlertTriangle size={24} />
+        </div>
+
+        <div>
+          <h4 className="text-sm font-bold text-red-900">
+            Manual Purge Disabled
+          </h4>
+
+          <p className="text-xs text-red-700 mt-1 leading-relaxed">
+            Manual purge functionality is currently disabled. This page uses dummy values and does not trigger any real purge operations.
+          </p>
+        </div>
+
+      </div>
       </div>
 
       {/* Safety Notice */}
