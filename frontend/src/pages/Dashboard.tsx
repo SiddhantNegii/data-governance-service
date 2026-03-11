@@ -19,15 +19,16 @@ export const Dashboard = () => {
   const [timelineData, setTimelineData] = useState<any[]>([]);
   const [productData, setProductData] = useState<any[]>([]);
 
-  useEffect(() => {
+  const fetchDashboard = async () => {
 
-    Promise.all([
-      api.getClients(),
-      api.getProducts(),
-      api.getRetentionPolicies(),
-      api.getPurgeLogs()
-    ])
-    .then(([clients, products, policies, logs]) => {
+    try {
+
+      const [clients, products, policies, logs] = await Promise.all([
+        api.getClients(),
+        api.getProducts(),
+        api.getRetentionPolicies(),
+        api.getPurgeLogs()
+      ]);
 
       const today = new Date().toDateString();
 
@@ -41,8 +42,6 @@ export const Dashboard = () => {
         activePolicies: policies.length,
         purgeJobsToday: jobsToday
       });
-
-      /* timeline */
 
       const dayCounts:any = {};
 
@@ -62,8 +61,6 @@ export const Dashboard = () => {
         }))
       );
 
-      /* product chart */
-
       const productCounts:any = {};
 
       logs.forEach((log:any) => {
@@ -80,7 +77,21 @@ export const Dashboard = () => {
         }))
       );
 
-    });
+    } catch (err) {
+      console.error(err);
+    }
+
+  };
+
+  useEffect(() => {
+
+    fetchDashboard();
+
+    const interval = setInterval(() => {
+      fetchDashboard();
+    }, 2000); // auto refresh
+
+    return () => clearInterval(interval);
 
   }, []);
 
@@ -95,8 +106,6 @@ export const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-
-      {/* Stats */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
@@ -121,8 +130,6 @@ export const Dashboard = () => {
         ))}
 
       </div>
-
-      {/* Charts */}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
@@ -154,7 +161,6 @@ export const Dashboard = () => {
           </div>
 
         </Card>
-
 
         <Card title="Data Deleted by Product">
 

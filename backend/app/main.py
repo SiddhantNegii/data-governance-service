@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.routers import purge_jobs
 from app.database import engine, Base
 from app.logger import logger
 
@@ -46,7 +46,7 @@ app.include_router(clients.router)
 app.include_router(products.router)
 app.include_router(policies.router)
 app.include_router(purge_logs.router)
-
+app.include_router(purge_jobs.router)
 # -----------------------------
 # Health Check Endpoint
 # -----------------------------

@@ -172,3 +172,36 @@ class PurgeLog(Base):
     status: Mapped[str] = mapped_column(
         String(50)
     )
+
+class PurgeJob(Base):
+
+    __tablename__ = "purge_jobs"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4
+    )
+
+    retention_policy_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        nullable=False
+    )
+
+    client_id: Mapped[str] = mapped_column(String(100), nullable=False)
+
+    product_id: Mapped[str] = mapped_column(String(100), nullable=False)
+
+    trigger_type: Mapped[str] = mapped_column(String(50))
+
+    status: Mapped[str] = mapped_column(String(50))
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    finished_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=True
+    )

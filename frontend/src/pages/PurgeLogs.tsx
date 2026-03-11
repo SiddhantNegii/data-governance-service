@@ -10,12 +10,26 @@ export const PurgeLogs = () => {
   const [logs, setLogs] = useState<PurgeLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const fetchLogs = async () => {
+    try {
+      const data = await api.getPurgeLogs();
+      setLogs(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
 
-    api.getPurgeLogs()
-      .then(setLogs)
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
+    fetchLogs();
+
+    const interval = setInterval(() => {
+      fetchLogs();
+    }, 2000); // refresh every 2 seconds
+
+    return () => clearInterval(interval);
 
   }, []);
 
@@ -124,5 +138,4 @@ export const PurgeLogs = () => {
 
     </div>
   );
-
 };
