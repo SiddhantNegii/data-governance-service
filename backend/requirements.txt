@@ -1,7 +1,9 @@
-fastapi
-uvicorn
-sqlalchemy
-asyncpg
-greenlet
-celery
-redis
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+sqlalchemy==2.0.30
+asyncpg==0.29.0
+greenlet==3.0.3
+celery==5.4.0
+redis==5.0.4
+python-dotenv==1.0.1
+pydantic==2.7.1

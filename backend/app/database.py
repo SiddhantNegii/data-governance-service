@@ -1,9 +1,15 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from sqlalchemy import create_engine
 
-DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/data_governance"
+load_dotenv()
 
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql+asyncpg://postgres:postgres@localhost:5432/data_governance"
+)
 # --------------------------------------------------
 # ASYNC ENGINE (FastAPI uses this)
 # --------------------------------------------------

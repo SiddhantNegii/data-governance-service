@@ -1,10 +1,16 @@
+import os
+from dotenv import load_dotenv
 from celery import Celery
+
+load_dotenv()
+
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 celery_app = Celery(
     "data_governance",
-    broker="redis://localhost:6379/0",
-    backend="redis://localhost:6379/0",
-    include=["app.tasks"]   # 👈 ADD THIS
+    broker=REDIS_URL,
+    backend=REDIS_URL,
+    include=["app.tasks"]
 )
 
 celery_app.conf.update(
